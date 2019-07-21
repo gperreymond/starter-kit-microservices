@@ -1,0 +1,8 @@
+{
+  "method": "get",
+  "path": "/test",
+  "options": {
+    "auth": false,
+    "log": { "collect": true }
+  }
+}

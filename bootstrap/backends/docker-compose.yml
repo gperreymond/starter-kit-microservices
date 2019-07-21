@@ -1,0 +1,142 @@
+version: "3.2"
+
+services:
+
+  rethinkdb:
+    image: rethinkdb
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=rethinkdb"
+      - "traefik.frontend.rule=Host:rethinkdb.docker.localhost"
+      - "traefik.port=8080"
+      - "traefik.docker.network=traefik"
+    volumes:
+      - rd_data:/data
+    networks:
+      - traefik
+    ports:
+      - "28015:28015"
+
+  memcached:
+    image: "memcached"
+    ports:
+      - "11211:11211"
+
+  nats:
+    image: "nats:linux"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=nats"
+      - "traefik.frontend.rule=Host:nats.docker.localhost"
+      - "traefik.port=8222"
+      - "traefik.docker.network=traefik"
+    networks:
+      - traefik
+    ports:
+      - "4222:4222"
+
+  redis:
+    image: "redis:4-alpine"
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - traefik
+    ports:
+      - "6379:6379"
+
+  mysql:
+    image: "mysql:5.7"
+    environment:
+      MYSQL_USER: "infra"
+      MYSQL_PASSWORD: "infra"
+      MYSQL_ROOT_PASSWORD: "infra"
+    networks:
+      - traefik
+    volumes:
+      - ms_data:/var/lib/mysql
+    labels:
+      - "traefik.enable=false"
+    ports:
+      - "3306:3306"
+
+  postgres:
+    image: "postgres:9.6-alpine"
+    environment:
+      POSTGRES_USER: "infra"
+      POSTGRES_PASSWORD: "infra"
+    networks:
+      - traefik
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    labels:
+      - "traefik.enable=false"
+    ports:
+      - "5432:5432"
+
+  rabbitmq:
+    image: "rabbitmq:3-management-alpine"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "SWQOKODSQALRPCLNMEQG"
+      RABBITMQ_DEFAULT_USER: "infra"
+      RABBITMQ_DEFAULT_PASS: "infra"
+      RABBITMQ_DEFAULT_VHOST: "/"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=rabbitmq"
+      - "traefik.frontend.rule=Host:rabbitmq.docker.localhost"
+      - "traefik.port=15672"
+      - "traefik.docker.network=traefik"
+    ports:
+      - "5672:5672"
+    networks:
+      - traefik
+
+  elasticsearch:
+    build: ./elasticsearch/
+    environment:
+      ES_JAVA_OPTS: "-Xms1g -Xmx1g"
+    ulimits:
+      nofile:
+        soft: 65535
+        hard: 65535
+      memlock:
+        soft: -1
+        hard: -1
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=elasticsearch"
+      - "traefik.frontend.rule=Host:elasticsearch.docker.localhost"
+      - "traefik.port=9200"
+      - "traefik.docker.network=traefik"
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  logstash:
+    build: ./logstash/
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    environment:
+      LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+    depends_on:
+      - elasticsearch
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - traefik
+    ports:
+      - "5000:5000"
+      - "9600:9600"
+
+volumes:
+  ms_data:
+  pg_data:
+  rd_data:
+
+networks:
+  traefik:
+    external:
+      name: traefik

@@ -1,0 +1,8 @@
+{
+  "method": "get",
+  "path": "/hc",
+  "options": {
+    "auth": false,
+    "log": { "collect": false }
+  }
+}
