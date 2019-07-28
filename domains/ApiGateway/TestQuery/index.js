@@ -1,7 +1,8 @@
 module.exports = {
   metadata: {
-    route: require('./route.json'),
-    metrics: true
+    metrics: true,
+    nats: true,
+    rabbitmq: true
   },
   metrics: {
     params: false,

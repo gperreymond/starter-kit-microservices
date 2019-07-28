@@ -1,5 +1,7 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
 
+const Nats = require('./modules/Nats')
+const RabbitMQ = require('./modules/RabbitMQ')
 const Configuration = require('./config')
 
 debug(`Starting application: ${Configuration.env}`)
@@ -18,14 +20,20 @@ process.on('exit', (n) => {
 
 const start = async function () {
   try {
-    const Moleculer = require('./modules/Moleculer')
-    const moleculer = new Moleculer()
-    moleculer.on('error', err => { throw err })
-    // Load service internal
-    await moleculer.getInstance().loadService('./services/Internal')
-    // Load other services in "domains"
-    await moleculer.services()
-    await moleculer.start()
+    // Moleculer on nats (services discovery)
+    const nats = new Nats()
+    nats.on('error', err => { throw err })
+    await nats.start()
+    debug(`Nats started`)
+    // Nats on rabbitmq
+    const rabbitmq = new RabbitMQ()
+    rabbitmq.on('error', err => { throw err })
+    await rabbitmq.start()
+    debug(`RabbitMQ started`)
+    // Cross attachments
+    nats.$rabbitmq = rabbitmq
+    rabbitmq.$nats = nats
+    // All good
     debug(`Application started`)
   } catch (e) {
     return Promise.reject(e)

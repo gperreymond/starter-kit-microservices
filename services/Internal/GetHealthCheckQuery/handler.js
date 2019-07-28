@@ -15,7 +15,6 @@ const handler = async (ctx) => {
       services
     }
   } catch (e) {
-    ctx.service.logger.error(ctx.action.rawName, e.message)
     return Promise.reject(e)
   }
 }

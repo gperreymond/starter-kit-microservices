@@ -20,6 +20,10 @@ module.exports = {
   commit: `${require('../package.json').homepage || ''}/commit/${nconf.get('APP_LAST_COMMIT') || 'localhost'}`,
   host: nconf.get('APP_HOST') || '0.0.0.0',
   port: APP_PORT,
+  logstash: {
+    host: nconf.get('APP_LOGSTASH_HOST') || 'localhost',
+    port: nconf.get('APP_LOGSTASH_PORT') || 5000
+  },
   rabbitmq: {
     hostname: nconf.get('APP_RABBITMQ_HOSTNAME') || 'localhost',
     port: APP_RABBITMQ_PORT,

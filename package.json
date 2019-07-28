@@ -1,11 +1,11 @@
 {
   "name": "starter-kit-microservices",
   "version": "1.0.0",
-  "repository": "git@...:lstarter-kit-microservices.git",
+  "repository": "git@github.com:gperreymond/starter-kit-microservices.git",
   "bugs": {
-    "url": "https://.../starter-kit-microservices/issues"
+    "url": "https://github.com/gperreymond/starter-kit-microservices/issues"
   },
-  "homepage": "https://.../starter-kit-microservices",
+  "homepage": "https://github.com/gperreymond/starter-kit-microservices",
   "contributors": [
     "Gilles Perreymond <gperreymond@gmail.com>",
     "Jérémy Wimsingues <jeremy.wimsingues@gmail.com>"
@@ -14,7 +14,8 @@
   "license": "UNLICENSED",
   "scripts": {
     "test": "APP_PORT=4000 jest --coverage --verbose --detectOpenHandles",
-    "start": "node scripts/start"
+    "start": "node scripts/start",
+    "fix": "standard --fix"
   },
   "standard": {
     "ignore": [],
@@ -26,13 +27,15 @@
       "beforeAll",
       "afterAll",
       "beforeEach",
-      "afterEach"
+      "afterEach",
+      "jest"
     ]
   },
   "dependencies": {
     "@hapi/boom": "7.4.2",
     "@hapi/hapi": "18.3.1",
     "@hapi/joi": "15.1.0",
+    "amqplib": "0.5.3",
     "debug": "4.1.1",
     "express-boom": "3.0.0",
     "glob": "7.1.4",
@@ -49,6 +52,6 @@
   "devDependencies": {
     "jest": "24.8.0",
     "nodemon": "1.19.1",
-    "standard": "13.0.2"
+    "standard": "13.1.0"
   }
 }

@@ -1,15 +1,15 @@
 const path = require('path')
 const glob = require('glob-promise')
 
-const getActions = (dirpath) => {
-  const files = glob.sync(`${path.resolve(__dirname, '../', dirpath)}/*`)
+const getActions = (dirpath, broker) => {
+  const files = glob.sync(`${path.resolve(__dirname, '../', dirpath)}/*/index.js`)
   const actions = {}
+  if (files.length === 0) { return actions }
   do {
     const file = files.shift()
-    const basename = path.basename(file)
-    if (basename !== 'index.js') {
-      actions[basename] = require(file)
-    }
+    const basename = path.basename(path.resolve(file, '..'))
+    const action = require(file)
+    if (action.metadata[broker] && action.metadata[broker] === true) { actions[basename] = action }
   } while (files.length)
   return actions
 }
