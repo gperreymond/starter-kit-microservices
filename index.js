@@ -1,7 +1,7 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
 
-const Nats = require('./modules/Nats')
-const RabbitMQ = require('./modules/RabbitMQ')
+const Broker = require('./modules/Broker')
+const Server = require('./modules/Server')
 const Configuration = require('./config')
 
 debug(`Starting application: ${Configuration.env}`)
@@ -18,21 +18,33 @@ process.on('exit', (n) => {
   if (n !== 0) { captureException(new Error(`Node process has exit...`)) }
 })
 
+const NATS = {
+  url: `nats://${Configuration.nats.hostname}:${Configuration.nats.port}`,
+  user: Configuration.nats.username,
+  pass: Configuration.nats.password,
+  maxReconnectAttempts: 1,
+  reconnect: false
+}
+const RABBITMQ = {
+  url: `amqp://${Configuration.rabbitmq.username}:${Configuration.rabbitmq.password}@${Configuration.rabbitmq.hostname}:${Configuration.rabbitmq.port}`,
+  eventTimeToLive: 5000,
+  prefetch: 1,
+  // If true, queues will be autodeleted once service is stopped, i.e., queue listener is removed
+  autoDeleteQueues: true
+}
+
 const start = async function () {
   try {
     // Moleculer on nats (services discovery)
-    const nats = new Nats()
+    const nats = new Broker('NATS', NATS)
     nats.on('error', err => { throw err })
     await nats.start()
     debug(`Nats started`)
-    // Nats on rabbitmq
-    const rabbitmq = new RabbitMQ()
+    // Moleculer on rabbitmq
+    const rabbitmq = new Broker('AMQP', RABBITMQ)
     rabbitmq.on('error', err => { throw err })
     await rabbitmq.start()
     debug(`RabbitMQ started`)
-    // Cross attachments
-    nats.$rabbitmq = rabbitmq
-    rabbitmq.$nats = nats
     // All good
     debug(`Application started`)
   } catch (e) {

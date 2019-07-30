@@ -9,7 +9,7 @@ const getActions = (dirpath, broker) => {
     const file = files.shift()
     const basename = path.basename(path.resolve(file, '..'))
     const action = require(file)
-    if (action.metadata[broker] && action.metadata[broker] === true) { actions[basename] = action }
+    actions[basename] = action
   } while (files.length)
   return actions
 }

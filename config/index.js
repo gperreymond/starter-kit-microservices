@@ -36,5 +36,13 @@ module.exports = {
     username: nconf.get('APP_NATS_USERNAME') || 'infra',
     password: nconf.get('APP_NATS_PASSWORD') || 'infra',
     maxReconnectAttempts: 3
+  },
+  google: {
+    api: {
+      books: {
+        url: 'https://www.googleapis.com/books/v1/volumes',
+        key: nconf.get('APP_GOOGLE_API_BOOKS') || 'AIzaSyAy6U_3IB-X76IbtBjTa8z-s1alj8LDAcY'
+      }
+    }
   }
 }
