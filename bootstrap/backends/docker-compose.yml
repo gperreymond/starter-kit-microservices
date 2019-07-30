@@ -2,6 +2,24 @@ version: "3.2"
 
 services:
 
+  couchbase:
+    image: couchbase
+    environment:
+      COUCHDB_USER: infra
+      COUCHDB_SECRET: infra
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=couchdb"
+      - "traefik.frontend.rule=Host:couchdb.docker.localhost"
+      - "traefik.port=8091"
+      - "traefik.docker.network=traefik"
+    volumes:
+      - cb_data:/opt/couchbase/var
+    networks:
+      - traefik
+    ports:
+      - "8091:8091"
+
   rethinkdb:
     image: rethinkdb
     labels:
@@ -135,6 +153,7 @@ volumes:
   ms_data:
   pg_data:
   rd_data:
+  cb_data:
 
 networks:
   traefik:
