@@ -5,7 +5,6 @@ const { getActions } = require('./Utils')
 class Service {
   constructor (name, broker) {
     const actions = getActions(`domains/${name}`, broker)
-    console.log(actions)
     this._name = name
     this._instance = {
       name,

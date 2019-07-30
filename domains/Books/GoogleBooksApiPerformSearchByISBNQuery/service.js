@@ -1,6 +1,7 @@
 const axios = require('axios')
 
 const Configuration = require('../../../config')
+const { params } = require('./validate')
 
 const handler = async (ctx) => {
   try {
@@ -11,4 +12,7 @@ const handler = async (ctx) => {
   } catch (e) { return Promise.reject(e) }
 }
 
-module.exports = handler
+module.exports = {
+  params,
+  handler
+}

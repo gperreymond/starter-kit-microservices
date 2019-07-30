@@ -45,6 +45,12 @@ const start = async function () {
     rabbitmq.on('error', err => { throw err })
     await rabbitmq.start()
     debug(`RabbitMQ started`)
+    // Server
+    const server = new Server()
+    server.getInstance().decorate('request', 'nats', nats.getInstance())
+    server.getInstance().decorate('request', 'rabbitmq', rabbitmq.getInstance())
+    server.on('error', err => { throw err })
+    await server.start()
     // All good
     debug(`Application started`)
   } catch (e) {

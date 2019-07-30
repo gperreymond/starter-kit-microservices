@@ -51,12 +51,13 @@ class Broker {
     debug(`[${this._type}] Detecting broker services`)
     try {
       const domains = glob.sync(`${path.resolve(__dirname, '../domains')}/*`)
+      if (domains.length === 0) { return true }
       do {
         const domain = domains.shift()
         const basename = path.basename(domain)
         debug(`[${this._type}] Service ${basename} is detected`)
         const service = new Service(basename, 'nats')
-        console.log(service)
+        this.getInstance().createService(service.getInstance())
       } while (domains.length > 0)
       return true
     } catch (e) {
