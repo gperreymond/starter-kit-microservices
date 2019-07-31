@@ -37,6 +37,13 @@ module.exports = {
     password: nconf.get('APP_NATS_PASSWORD') || 'infra',
     maxReconnectAttempts: 3
   },
+  bnf: {
+    api: {
+      sru: {
+        url: 'http://catalogue.bnf.fr/api/SRU'
+      }
+    }
+  },
   google: {
     api: {
       books: {
