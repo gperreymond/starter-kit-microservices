@@ -1,7 +1,12 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
 
+const couchbase = require('couchbase')
+const cluster = new couchbase.Cluster('couchbase://172.30.0.10')
+cluster.authenticate('infra', 'azer1234')
+
 const Broker = require('./modules/Broker')
 const Server = require('./modules/Server')
+const RabbitMQ = require('./modules/RabbitMQ')
 const Configuration = require('./config')
 
 debug(`Starting application: ${Configuration.env}`)
@@ -25,26 +30,18 @@ const NATS = {
   maxReconnectAttempts: 1,
   reconnect: false
 }
-const RABBITMQ = {
-  url: `amqp://${Configuration.rabbitmq.username}:${Configuration.rabbitmq.password}@${Configuration.rabbitmq.hostname}:${Configuration.rabbitmq.port}`,
-  eventTimeToLive: 5000,
-  prefetch: 1,
-  // If true, queues will be autodeleted once service is stopped, i.e., queue listener is removed
-  autoDeleteQueues: true
-}
 
 const start = async function () {
   try {
     // Moleculer on nats (services discovery)
     const nats = new Broker('NATS', NATS)
     nats.on('error', err => { throw err })
+    nats.getInstance().$books = cluster.openBucket('books')
     await nats.start()
     debug(`Nats started`)
-    // Moleculer on rabbitmq
-    const rabbitmq = new Broker('AMQP', RABBITMQ)
+    // RabbitMQ queues
+    const rabbitmq = new RabbitMQ()
     rabbitmq.on('error', err => { throw err })
-    await rabbitmq.start()
-    debug(`RabbitMQ started`)
     // Server
     const server = new Server()
     server.getInstance().decorate('request', 'nats', nats.getInstance())
@@ -52,6 +49,7 @@ const start = async function () {
     server.on('error', err => { throw err })
     await server.start()
     // All good
+    nats.$rabbitmq = rabbitmq
     debug(`Application started`)
   } catch (e) {
     return Promise.reject(e)

@@ -1,24 +1,20 @@
-const debug = require('debug')('application:services'.padEnd(25, ' '))
-
 const { getActions } = require('./Utils')
 
 class Service {
-  constructor (name, broker) {
-    const actions = getActions(`domains/${name}`, broker)
+  constructor (name) {
+    const actions = getActions(`domains/${name}`)
+    const events = require(`../domains/${name}/events.js`)
     this._name = name
     this._instance = {
       name,
       actions,
-      events: {},
+      events,
       methods: {},
       created () {
-        debug(`${this.name} is created`)
       },
       async started () {
-        debug(`${this.name} is started`)
       },
       async stopped () {
-        debug(`${this.name} is started`)
       }
     }
   }

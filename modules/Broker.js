@@ -32,7 +32,7 @@ class Broker {
       validator: new JoiValidator(),
       middlewares: [{
         stopped: () => {
-          this.emit('error', new Error(`[${this._type}] Moleculer has stopped`))
+          this.emit('error', new Error(`Moleculer has stopped`))
         },
         started: () => {
           this.emit('started')
@@ -48,15 +48,15 @@ class Broker {
   }
 
   async services () {
-    debug(`[${this._type}] Detecting broker services`)
+    debug(`Detecting broker services`)
     try {
       const domains = glob.sync(`${path.resolve(__dirname, '../domains')}/*`)
       if (domains.length === 0) { return true }
       do {
         const domain = domains.shift()
         const basename = path.basename(domain)
-        debug(`[${this._type}] Service ${basename} is detected`)
-        const service = new Service(basename, 'nats')
+        debug(`Service ${basename} is detected`)
+        const service = new Service(basename)
         this.getInstance().createService(service.getInstance())
       } while (domains.length > 0)
       return true
@@ -70,7 +70,7 @@ class Broker {
     try {
       await this.services()
       await this.getInstance().start()
-      debug(`[${this._type}] Broker started`)
+      debug(`Broker started`)
       return true
     } catch (e) {
       this.emit('error', e)

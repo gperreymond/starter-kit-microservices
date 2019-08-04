@@ -37,6 +37,13 @@ module.exports = {
     password: nconf.get('APP_NATS_PASSWORD') || 'infra',
     maxReconnectAttempts: 3
   },
+  openlibrary: {
+    api: {
+      books: {
+        url: 'https://openlibrary.org/api/books'
+      }
+    }
+  },
   bnf: {
     api: {
       sru: {
