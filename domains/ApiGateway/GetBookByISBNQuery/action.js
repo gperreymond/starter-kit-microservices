@@ -27,12 +27,12 @@ const handler = async (ctx) => {
     const book = await get(ctx.broker.$books, isbn).catch((err) => {
       // book not found ?
       if (err.isBoom) {
-        ctx.broker.emit('Books.PerformSearchByISBNEvent', { isbn, OPEN_LIBRARY: true, BNF: true, GOOGLE: true })
+        ctx.broker.emit('Books.PerformSearchByISBNEvent', { isbn })
         return Promise.reject(Boom.notFound('Document not found'))
       }
       throw err
     })
-    ctx.broker.emit('Books.PerformSearchByISBNEvent', { isbn, OPEN_LIBRARY: !book.OPEN_LIBRARY, BNF: !book.BNF, GOOGLE: !book.GOOGLE })
+    ctx.broker.emit('Books.PerformSearchByISBNEvent', { isbn })
     return book
   } catch (e) { console.log(e.message); return Promise.reject(e) }
 }

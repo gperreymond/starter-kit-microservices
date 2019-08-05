@@ -24,9 +24,9 @@ const upsert = (bucket, isbn, data) => {
 const handler = async (ctx) => {
   ctx.service.logger.warn(ctx.action.rawName, ctx.params)
   try {
-    const { isbn } = ctx.params
-    const skip = 0
-    const URL = `${Configuration.google.api.books.url}?q=${isbn}&startIndex=${skip}&maxResults=40&printTypes=books&orderBy=newest`
+    const { isbn, skip } = ctx.params
+    const URL = `${Configuration.api.google_books_url}?q=${isbn}&startIndex=${skip || 0}&maxResults=40&printTypes=books&orderBy=newest`
+    console.log(URL)
     const { data } = await axios.get(URL)
     // get ISBN_13
     if (data.totalItems > 0) {

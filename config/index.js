@@ -38,8 +38,6 @@ module.exports = {
     maxReconnectAttempts: 3
   },
   api: {
-    openlibrary_books_url: 'https://openlibrary.org/api/books',
-    bnf_sru_url: 'http://catalogue.bnf.fr/api/SRU',
     google_books_url: 'https://www.googleapis.com/books/v1/volumes'
   }
 }

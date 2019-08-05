@@ -42,6 +42,7 @@ const start = async function () {
     nats.getInstance().$books = cluster.openBucket('books')
     nats.getInstance().$rabbitmq = rabbitmq.getInstance()
     await nats.start()
+    rabbitmq.$nats = nats.getInstance()
     debug(`Nats started`)
     // Server
     const server = new Server()

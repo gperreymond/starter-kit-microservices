@@ -37,19 +37,23 @@ class RabbitMQ {
       do {
         const domain = domains.shift()
         const basename = path.basename(domain)
-        debug(`Domain ${basename} is detected`)
         const queues = getQueues(`domains/${basename}`)
-        if (queues.length > 1) {
+        debug(`Domain ${basename} Queues ${queues.length} detected`)
+        if (queues.length > 0) {
           do {
             const queue = queues.shift()
-            this.getInstance()
-              .createQueue(`${basename}.${queue.name}.Queue`, queue.options, (msg, ack) => {
-                console.log(msg.content.toString())
+            this.getInstance().createQueue(`${basename}.${queue.name}.Queue`, queue.options, async (msg, ack) => {
+              try {
+                const action = msg.fields.routingKey.replace('.Key', '')
+                const params = JSON.parse(msg.content.toString())
+                await this.$nats.call(action, params)
                 ack(null, 'response')
-              })
-              .then(() => console.log('queue created'))
-            this.getInstance().bindToExchange(`${basename}.${queue.name}.Queue`, 'amq.topic', `${basename}.${queue.name}.Key`)
-            debug(`Queue ${basename}.${queue.name} added`)
+              } catch (err) {
+                console.log(err.message)
+                ack(null, 'response')
+              }
+            }).then(() => debug(`... ${basename}.${queue.name}.Queue created`))
+            this.getInstance().bindToTopic(`${basename}.${queue.name}.Queue`, `${basename}.${queue.name}.Key`)
           } while (queues.length > 0)
         }
       } while (domains.length > 0)
