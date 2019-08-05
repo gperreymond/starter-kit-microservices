@@ -33,23 +33,22 @@ const NATS = {
 
 const start = async function () {
   try {
+    // RabbitMQ queues
+    const rabbitmq = new RabbitMQ()
+    rabbitmq.on('error', err => { throw err })
     // Moleculer on nats (services discovery)
     const nats = new Broker('NATS', NATS)
     nats.on('error', err => { throw err })
     nats.getInstance().$books = cluster.openBucket('books')
+    nats.getInstance().$rabbitmq = rabbitmq.getInstance()
     await nats.start()
     debug(`Nats started`)
-    // RabbitMQ queues
-    const rabbitmq = new RabbitMQ()
-    rabbitmq.on('error', err => { throw err })
     // Server
     const server = new Server()
     server.getInstance().decorate('request', 'nats', nats.getInstance())
     server.getInstance().decorate('request', 'rabbitmq', rabbitmq.getInstance())
     server.on('error', err => { throw err })
     await server.start()
-    // All good
-    nats.$rabbitmq = rabbitmq
     debug(`Application started`)
   } catch (e) {
     return Promise.reject(e)

@@ -37,26 +37,9 @@ module.exports = {
     password: nconf.get('APP_NATS_PASSWORD') || 'infra',
     maxReconnectAttempts: 3
   },
-  openlibrary: {
-    api: {
-      books: {
-        url: 'https://openlibrary.org/api/books'
-      }
-    }
-  },
-  bnf: {
-    api: {
-      sru: {
-        url: 'http://catalogue.bnf.fr/api/SRU'
-      }
-    }
-  },
-  google: {
-    api: {
-      books: {
-        url: 'https://www.googleapis.com/books/v1/volumes',
-        key: nconf.get('APP_GOOGLE_API_BOOKS') || 'AIzaSyAy6U_3IB-X76IbtBjTa8z-s1alj8LDAcY'
-      }
-    }
+  api: {
+    openlibrary_books_url: 'https://openlibrary.org/api/books',
+    bnf_sru_url: 'http://catalogue.bnf.fr/api/SRU',
+    google_books_url: 'https://www.googleapis.com/books/v1/volumes'
   }
 }
