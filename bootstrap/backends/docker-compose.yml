@@ -20,21 +20,6 @@ services:
     ports:
       - "8091:8091"
 
-  rethinkdb:
-    image: rethinkdb
-    labels:
-      - "traefik.enable=true"
-      - "traefik.backend=rethinkdb"
-      - "traefik.frontend.rule=Host:rethinkdb.docker.localhost"
-      - "traefik.port=8080"
-      - "traefik.docker.network=traefik"
-    volumes:
-      - rd_data:/data
-    networks:
-      - traefik
-    ports:
-      - "28015:28015"
-
   memcached:
     image: "memcached"
     ports:
