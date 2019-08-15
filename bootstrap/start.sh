@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# ************************************
+# 1. initialization
+# ************************************
+
 docker network create traefik
 
 MY_IF=$(netstat -rn | awk '/^0.0.0.0/ {thif=substr($0,74,10); print thif;} /^default.*UG/ {thif=substr($0,65,10); print thif;}' | head -n 1 | xargs)
@@ -8,6 +12,25 @@ echo "Localhost IP: ${MY_IP}"
 
 export IP_LOCALHOST=$MY_IP
 
+# ************************************
+# 2. start components
+# ************************************
+
 docker-compose up -d
 docker-compose -f backends/docker-compose.yml up -d
 docker-compose -f frontends/docker-compose.yml up -d
+
+# ************************************
+# 3. prepare oryd
+# ************************************
+
+# Prepare ORY components
+docker pull oryd/hydra:v1.0.0
+# ORY Hydra does not do magic, it requires conscious decisions, for example running SQL migrations which is required
+docker run -it --rm --network traefik oryd/hydra:v1.0.0 migrate sql --yes postgres://infra:infra@postgres:5432/hydra?sslmode=disable
+
+# ************************************
+# 4. start oryd
+# ************************************
+
+docker-compose -f ory/docker-compose.yml up -d

@@ -15,7 +15,8 @@ module.exports = {
     validate: {
       params
     },
-    auth: false,
-    log: { collect: true }
+    auth: 'simple',
+    log: { collect: true },
+    tags: ['api', 'ApiGateway']
   }
 }

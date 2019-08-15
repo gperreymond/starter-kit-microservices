@@ -22,6 +22,24 @@ services:
       - 80:80
       - 443:443
 
+  nginx:
+    image: schmunk42/nginx-redirect
+    deploy:
+      replicas: 1
+      resources:
+        limits:
+          cpus: "0.05"
+          memory: 56m
+      labels:
+        - "traefik.enable=false"
+    environment:
+      - SERVER_REDIRECT=hydra-api.docker.localhost
+      - SERVER_REDIRECT_SCHEME=https
+    networks:
+      - traefik
+    ports:
+      - 7777:80
+
 networks:
   traefik:
     external:

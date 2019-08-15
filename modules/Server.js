@@ -6,9 +6,11 @@ const Hapi = require('@hapi/hapi')
 const Inert = require('@hapi/inert')
 const Vision = require('@hapi/vision')
 const HapiSwagger = require('hapi-swagger')
+const HapiAuthBasic = require('@hapi/basic')
+const colors = require('colors')
 
 const Configuration = require('../config')
-const { getRoutes } = require('./Utils')
+const { getRoutes, validateBasic } = require('./Utils')
 
 class Server {
   constructor () {
@@ -27,20 +29,25 @@ class Server {
   }
 
   async plugins () {
+    await this.getInstance().register([Inert, Vision])
+    debug(`Plugin Inert, Vision are registered`)
+    await this.getInstance().register(HapiAuthBasic)
+    this.getInstance().auth.strategy('simple', 'basic', { validate: validateBasic })
+    debug(`Plugin HapiAuthBasic is registered`)
     const swaggerOptions = {
       info: {
         title: 'API Documentation',
         version: Configuration.version
-      }
+      },
+      payloadType: 'form',
+      securityDefinitions: {
+        BasicAuth: { type: 'basic' }
+      },
+      schemes: ['https'],
+      grouping: 'tags'
     }
-    await this.getInstance().register([
-      Inert,
-      Vision,
-      {
-        plugin: HapiSwagger,
-        options: swaggerOptions
-      }
-    ])
+    await this.getInstance().register({ plugin: HapiSwagger, options: swaggerOptions })
+    debug(`Plugin HapiSwagger is registered`)
   }
 
   async routes () {
@@ -50,7 +57,14 @@ class Server {
       if (routes.length === 0) { return true }
       do {
         const route = routes.shift()
-        debug(`Route ${route.method} ${route.path} is detected`)
+        let selectedColor = 'green'
+        if (!route.options.plugins) { route.options.plugins = {} }
+        route.options.plugins['hapi-swagger'] = { security: [] }
+        if (route.options.auth === 'simple') {
+          selectedColor = 'yellow'
+          route.options.plugins['hapi-swagger'].security = [{ BasicAuth: [] }]
+        }
+        debug(`Route ${colors[selectedColor](route.method)} ${colors[selectedColor](route.path)} is registered with auth: ${colors[selectedColor](route.options.auth)}`)
         await this.getInstance().route(route)
       } while (routes.length > 0)
       return true

@@ -1,6 +1,17 @@
 const path = require('path')
 const glob = require('glob-promise')
 
+const Configuration = require('../config')
+
+const validateBasic = async (request, username, password) => {
+  const basic = Configuration.auth.basic
+  if (!basic) {
+    return { isValid: false }
+  }
+  const isValid = (username === basic.username && password === basic.password)
+  return { isValid, credentials: { name: basic.username } }
+}
+
 const getQueues = (dirpath) => {
   const files = glob.sync(`${path.resolve(__dirname, '../', dirpath)}/*/queue.js`)
   const queues = []
@@ -59,5 +70,6 @@ module.exports = {
   getQueues,
   getActions,
   getEvents,
-  getRoutes
+  getRoutes,
+  validateBasic
 }
