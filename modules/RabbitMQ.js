@@ -30,7 +30,7 @@ class RabbitMQ {
   }
 
   async queues () {
-    debug(`Detecting queues`)
+    debug('Detecting queues')
     try {
       const domains = glob.sync(`${path.resolve(__dirname, '../domains')}/*`)
       if (domains.length === 0) { return true }

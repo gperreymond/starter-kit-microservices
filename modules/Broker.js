@@ -28,11 +28,10 @@ class Broker {
       },
       logger: true,
       metrics: true,
-      validation: true,
       validator: new JoiValidator(),
       middlewares: [{
         stopped: () => {
-          this.emit('error', new Error(`Moleculer has stopped`))
+          this.emit('error', new Error('Moleculer has stopped'))
         },
         started: () => {
           this.emit('started')
@@ -48,7 +47,7 @@ class Broker {
   }
 
   async services () {
-    debug(`Detecting broker services`)
+    debug('Detecting broker services')
     try {
       const domains = glob.sync(`${path.resolve(__dirname, '../domains')}/*`)
       if (domains.length === 0) { return true }
@@ -70,7 +69,7 @@ class Broker {
     try {
       await this.services()
       await this.getInstance().start()
-      debug(`Broker started`)
+      debug('Broker started')
       return true
     } catch (e) {
       this.emit('error', e)

@@ -1,8 +1,7 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
 
 const couchbase = require('couchbase')
-const cluster = new couchbase.Cluster('couchbase://172.30.0.10')
-cluster.authenticate('infra', 'azer1234')
+const cluster = new couchbase.Cluster('couchbase://localhost', { username: 'infra', password: 'azer1234' })
 
 const Broker = require('./modules/Broker')
 const Server = require('./modules/Server')
@@ -20,7 +19,7 @@ const captureException = function (err) {
 }
 process.on('uncaughtException', captureException)
 process.on('exit', (n) => {
-  if (n !== 0) { captureException(new Error(`Node process has exit...`)) }
+  if (n !== 0) { captureException(new Error('Node process has exit...')) }
 })
 
 const NATS = {
@@ -39,18 +38,18 @@ const start = async function () {
     // Moleculer on nats (services discovery)
     const nats = new Broker('NATS', NATS)
     nats.on('error', err => { throw err })
-    nats.getInstance().$books = cluster.openBucket('books')
+    nats.getInstance().$books = cluster.bucket('books')
     nats.getInstance().$rabbitmq = rabbitmq.getInstance()
     await nats.start()
     rabbitmq.$nats = nats.getInstance()
-    debug(`Nats started`)
+    debug('Nats started')
     // Server
     const server = new Server()
     server.getInstance().decorate('request', 'nats', nats.getInstance())
     server.getInstance().decorate('request', 'rabbitmq', rabbitmq.getInstance())
     server.on('error', err => { throw err })
     await server.start()
-    debug(`Application started`)
+    debug('Application started')
   } catch (e) {
     return Promise.reject(e)
   }

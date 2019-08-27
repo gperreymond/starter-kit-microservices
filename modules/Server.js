@@ -30,10 +30,10 @@ class Server {
 
   async plugins () {
     await this.getInstance().register([Inert, Vision])
-    debug(`Plugin Inert, Vision are registered`)
+    debug('Plugin Inert, Vision are registered')
     await this.getInstance().register(HapiAuthBasic)
     this.getInstance().auth.strategy('simple', 'basic', { validate: validateBasic })
-    debug(`Plugin HapiAuthBasic is registered`)
+    debug('Plugin HapiAuthBasic is registered')
     const swaggerOptions = {
       info: {
         title: 'API Documentation',
@@ -47,11 +47,11 @@ class Server {
       grouping: 'tags'
     }
     await this.getInstance().register({ plugin: HapiSwagger, options: swaggerOptions })
-    debug(`Plugin HapiSwagger is registered`)
+    debug('Plugin HapiSwagger is registered')
   }
 
   async routes () {
-    debug(`Detecting server exposed routes`)
+    debug('Detecting server exposed routes')
     try {
       const routes = getRoutes()
       if (routes.length === 0) { return true }
@@ -79,7 +79,7 @@ class Server {
       await this.plugins()
       await this.routes()
       await this.getInstance().start()
-      debug(`Server started`)
+      debug('Server started')
       return true
     } catch (e) {
       this.emit('error', e)
