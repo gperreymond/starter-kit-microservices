@@ -4,7 +4,10 @@
 
 ![moleculer services](moleculer.png?raw=true)
 
-https://moleculer.services/
+![hapi](hapi.png?raw=true)
+
+- https://moleculer.services/
+- https://hapi.dev/
 
 ## Definition of a service
 
@@ -41,7 +44,7 @@ application:main          Application started +76ms
 ## Create your first action in a service
 
 A service need to have some actions, concider an action as a simple handler and some configurations.  
-Create a new directory in __Service__ with the name of the action you want.
+Create a new directory in __services__ with the name of the action you want.
 
 ```sh
 mkdir services/System/GetHealthCheckForKubernetes
