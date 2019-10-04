@@ -1,7 +1,5 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
-
 const couchbase = require('couchbase')
-const cluster = new couchbase.Cluster('couchbase://localhost', { username: 'infra', password: 'azer1234' })
 
 const Broker = require('./modules/Broker')
 const Server = require('./modules/Server')
@@ -22,6 +20,16 @@ process.on('exit', (n) => {
   if (n !== 0) { captureException(new Error('Node process has exit...')) }
 })
 
+let cluster
+let eventstore
+try {
+  cluster = new couchbase.Cluster('couchbase://localhost/')
+  cluster.authenticate(Configuration.couchbase.username, Configuration.couchbase.password)
+  eventstore = cluster.openBucket('eventstore')
+} catch (e) {
+  captureException(e)
+}
+
 const NATS = {
   url: `nats://${Configuration.nats.hostname}:${Configuration.nats.port}`,
   user: Configuration.nats.username,
@@ -38,7 +46,7 @@ const start = async function () {
     // Moleculer on nats (services discovery)
     const nats = new Broker('NATS', NATS)
     nats.on('error', err => { throw err })
-    nats.getInstance().$books = cluster.bucket('books')
+    nats.getInstance().$eventstore = eventstore
     nats.getInstance().$rabbitmq = rabbitmq.getInstance()
     await nats.start()
     rabbitmq.$nats = nats.getInstance()

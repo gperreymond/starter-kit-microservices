@@ -1,0 +1,51 @@
+version: '3.7'
+
+services:
+
+  agent:
+    image: portainer/agent:1.4.0
+    environment:
+      AGENT_CLUSTER_ADDR: tasks.agent
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    networks:
+      - private_portainer
+    deploy:
+      mode: global
+      placement:
+        constraints:
+          - node.platform.os == linux
+
+  portainer:
+    image: portainer/portainer:1.22.0
+    command: -H tcp://tasks.agent:9001 --tlsskipverify
+    volumes:
+      - portainer_data:/data
+    networks:
+      - private_portainer
+      - public
+    deploy:
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.docker.network=public"
+        - "traefik.port=9000"
+        - "traefik.backend=portainer"
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=Host:portainer.docker.localhost"
+        - "traefik.frontend.headers.SSLRedirect=true"
+        - "traefik.frontend.entryPoints=http,https"
+
+volumes:
+
+  portainer_data:
+
+networks:
+
+  private_portainer:
+    driver: overlay
+    name: private_portainer
+  public:
+    external: true

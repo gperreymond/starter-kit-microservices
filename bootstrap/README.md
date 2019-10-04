@@ -1,36 +1,43 @@
-# Lalalab Development Bootstrap
+# Development Bootstrap
 
-First time ELK stack is created, it could be long, because these three components have to be build from docker files.
+__Based on docker, docker-compose and swarmMode.__
 
-̀̀̀## Prepare your machine
+#### Documentations
+
+- https://sysadmins.co.za/traefik-and-portainer-on-docker-swarm-with-letsencrypt/
 
 #### Troubles with elasticsearch
 
 - sudo sysctl -w vm.max_map_count=262144
 - sudo sysctl -w fs.file-max=65536
 
-#### Docker engines
-
-Having __docker__ and __docker-compose__ ready to use.
-
 ## Listing of infrastructure components
 
 #### commons
 
 - traefik: https://traefik.docker.localhost
+- portainer: https://portainer.docker.localhost
 
-#### backends
+#### brokers
 
-- rabbitmq: https://portainer.docker.localhost
+- rabbitmq
+- nats
+
+#### databases
+
 - postgres
 - mysql
-- logstash
+- couchbase
 - elasticsearch
-- redis
-- nats: https://nats.docker.localhost
+
+#### others
+
+- logstash
 
 #### frontends
 
+- rabbitmq: https://portainer.docker.localhost
+- couchbase: https://couchbase.docker.localhost
 - kibana: https://kibana.docker.localhost
 
 ## Usages

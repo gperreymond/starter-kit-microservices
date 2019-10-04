@@ -32,12 +32,12 @@ class RabbitMQ {
   async queues () {
     debug('Detecting queues')
     try {
-      const domains = glob.sync(`${path.resolve(__dirname, '../domains')}/*`)
-      if (domains.length === 0) { return true }
+      const services = glob.sync(`${path.resolve(__dirname, '../services')}/*`)
+      if (services.length === 0) { return true }
       do {
-        const domain = domains.shift()
-        const basename = path.basename(domain)
-        const queues = getQueues(`domains/${basename}`)
+        const item = services.shift()
+        const basename = path.basename(item)
+        const queues = getQueues(`services/${basename}`)
         debug(`Domain ${basename} Queues ${queues.length} detected`)
         if (queues.length > 0) {
           do {
@@ -56,7 +56,7 @@ class RabbitMQ {
             this.getInstance().bindToTopic(`${basename}.${queue.name}.Queue`, `${basename}.${queue.name}.Key`)
           } while (queues.length > 0)
         }
-      } while (domains.length > 0)
+      } while (services.length > 0)
       return true
     } catch (e) {
       this.emit('error', e)

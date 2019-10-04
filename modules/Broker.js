@@ -6,6 +6,7 @@ const EventEmitter = require('events')
 const { inherits } = require('util')
 const { ServiceBroker } = require('moleculer')
 
+const Configuration = require('../config')
 const JoiValidator = require('./JoiValidator')
 const Service = require('./Service')
 
@@ -26,7 +27,7 @@ class Broker {
         TRANSPORTER: 'error',
         '**': 'info'
       },
-      logger: true,
+      logger: Configuration.broker.logger,
       metrics: true,
       validator: new JoiValidator(),
       middlewares: [{
@@ -49,15 +50,15 @@ class Broker {
   async services () {
     debug('Detecting broker services')
     try {
-      const domains = glob.sync(`${path.resolve(__dirname, '../domains')}/*`)
-      if (domains.length === 0) { return true }
+      const services = glob.sync(`${path.resolve(__dirname, '../services')}/*`)
+      if (services.length === 0) { return true }
       do {
-        const domain = domains.shift()
-        const basename = path.basename(domain)
+        const item = services.shift()
+        const basename = path.basename(item)
         debug(`Service ${basename} is detected`)
         const service = new Service(basename)
         this.getInstance().createService(service.getInstance())
-      } while (domains.length > 0)
+      } while (services.length > 0)
       return true
     } catch (e) {
       this.emit('error', e)

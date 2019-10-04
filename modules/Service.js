@@ -2,13 +2,13 @@ const { getActions } = require('./Utils')
 
 class Service {
   constructor (name) {
-    const actions = getActions(`domains/${name}`)
-    const events = require(`../domains/${name}/events.js`)
+    const actions = getActions(`services/${name}`)
+    // const events = require(`../services/${name}/events.js`)
     this._name = name
     this._instance = {
       name,
       actions,
-      events,
+      // events,
       methods: {},
       created () {
       },

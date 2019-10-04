@@ -4,11 +4,13 @@ nconf.argv().env().file({ file: 'nconf.json' })
 // ************************************
 // Typecasting from kube env
 // ************************************
+let APP_BROKER_LOGGER = false
 let APP_PORT = 3000
 let APP_RABBITMQ_PORT = 5672
 let APP_NATS_PORT = 4222
 let APP_LOGSTASH_PORT = 5000
 // ************************************
+if (nconf.get('APP_BROKER_LOGGER')) { APP_BROKER_LOGGER = nconf.get('APP_BROKER_LOGGER') === 'true' }
 if (nconf.get('APP_PORT')) { APP_PORT = parseInt(nconf.get('APP_PORT')) }
 if (nconf.get('APP_RABBITMQ_PORT')) { APP_RABBITMQ_PORT = parseInt(nconf.get('APP_RABBITMQ_PORT')) }
 if (nconf.get('APP_NATS_PORT')) { APP_NATS_PORT = parseInt(nconf.get('APP_NATS_PORT')) }
@@ -26,6 +28,10 @@ module.exports = {
     host: nconf.get('APP_LOGSTASH_HOST') || 'localhost',
     port: APP_LOGSTASH_PORT
   },
+  couchbase: {
+    username: 'infra',
+    password: 'infra'
+  },
   rabbitmq: {
     hostname: nconf.get('APP_RABBITMQ_HOSTNAME') || 'localhost',
     port: APP_RABBITMQ_PORT,
@@ -39,13 +45,13 @@ module.exports = {
     password: nconf.get('APP_NATS_PASSWORD') || 'infra',
     maxReconnectAttempts: 3
   },
+  broker: {
+    logger: APP_BROKER_LOGGER
+  },
   auth: {
     basic: {
       username: nconf.get('APP_AUTH_BASIC_USERNAME') || 'infra',
       password: nconf.get('APP_AUTH_BASIC_PASSWORD') || 'infra'
     }
-  },
-  api: {
-    google_books_url: 'https://www.googleapis.com/books/v1/volumes'
   }
 }

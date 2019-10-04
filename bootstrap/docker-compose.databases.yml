@@ -1,0 +1,75 @@
+version: '3.7'
+
+services:
+
+  mysql:
+    image: "mysql:5.7"
+    environment:
+      MYSQL_USER: "infra"
+      MYSQL_PASSWORD: "infra"
+      MYSQL_ROOT_PASSWORD: "infra"
+    networks:
+      - private_databases
+      - public
+    volumes:
+      - mysql_data:/var/lib/mysql
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "3306:3306"
+
+
+  postgres:
+    image: "postgres:9.6-alpine"
+    environment:
+      POSTGRES_USER: "infra"
+      POSTGRES_PASSWORD: "infra"
+    networks:
+      - private_databases
+      - public
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "5432:5432"
+
+  couchbase:
+    image: "couchbase:community-6.0.0"
+    environment:
+      COUCHDB_USER: infra
+      COUCHDB_SECRET: infra
+    volumes:
+      - couchbase_data:/opt/couchbase/var
+    networks:
+      - private_databases
+      - public
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "traefik.docker.network=public"
+        - "traefik.port=8091"
+        - "traefik.backend=couchbase"
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=Host:couchbase.docker.localhost"
+        - "traefik.frontend.headers.SSLRedirect=true"
+        - "traefik.frontend.entryPoints=http,https"
+    ports:
+      - "8091:8091"
+
+volumes:
+
+  couchbase_data:
+  postgres_data:
+  mysql_data:
+
+networks:
+
+  private_databases:
+    driver: overlay
+    name: private_databases
+  public:
+    external: true
