@@ -7,7 +7,6 @@ const { inherits } = require('util')
 const { ServiceBroker } = require('moleculer')
 
 const Configuration = require('../config')
-const JoiValidator = require('./JoiValidator')
 const Service = require('./Service')
 
 class Broker {
@@ -29,7 +28,7 @@ class Broker {
       },
       logger: Configuration.broker.logger,
       metrics: true,
-      validator: new JoiValidator(),
+      validator: true,
       middlewares: [{
         stopped: () => {
           this.emit('error', new Error('Moleculer has stopped'))

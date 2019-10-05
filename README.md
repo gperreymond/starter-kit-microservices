@@ -4,7 +4,7 @@
 
 ![moleculer services](moleculer.png?raw=true)
 
-![hapi](hapi.png?raw=true)
+![hapi server](hapi.png?raw=true)
 
 - https://moleculer.services/
 - https://hapi.dev/
