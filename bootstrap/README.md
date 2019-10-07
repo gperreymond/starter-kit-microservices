@@ -33,6 +33,8 @@ __Based on docker, docker-compose and swarmMode.__
 #### others
 
 - logstash
+- thumbor
+- scribus-server
 
 #### frontends
 

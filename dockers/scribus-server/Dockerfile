@@ -19,7 +19,6 @@ RUN python --version && \
 
 COPY server.py /usr/local/scribus/server.py
 ADD scripts /usr/local/scribus/scripts
-ADD templates /usr/local/scribus/templates
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 
 WORKDIR /usr/local/scribus
@@ -27,4 +26,4 @@ WORKDIR /usr/local/scribus
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["scribus"]
 
-EXPOSE 8888
+EXPOSE 8000
