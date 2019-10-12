@@ -25,11 +25,17 @@ module.exports = {
   host: nconf.get('APP_HOST') || '0.0.0.0',
   port: APP_PORT,
   logstash: {
-    host: nconf.get('APP_LOGSTASH_HOST') || 'localhost',
+    hostname: nconf.get('APP_LOGSTASH_HOSTNAME') || 'localhost',
     port: APP_LOGSTASH_PORT
   },
   couchbase: {
+    hostname: nconf.get('APP_COUCHBASE_HOSTNAME') || 'localhost',
     username: 'infra',
+    password: 'infra'
+  },
+  rethinkdb: {
+    hostname: nconf.get('APP_RETHINKDB_HOSTNAME') || 'localhost',
+    username: 'admin',
     password: 'infra'
   },
   rabbitmq: {

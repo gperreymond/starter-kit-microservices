@@ -1,5 +1,5 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
-const couchbase = require('couchbase')
+// const couchbase = require('couchbase')
 
 const Broker = require('./modules/Broker')
 const Server = require('./modules/Server')
@@ -20,16 +20,44 @@ process.on('exit', (n) => {
   if (n !== 0) { captureException(new Error('Node process has exit...')) }
 })
 
-let cluster
+/*****
+COUCHBASE
+*****/
+/* let cluster
 let eventstore
 try {
-  cluster = new couchbase.Cluster('couchbase://localhost/')
+  cluster = new couchbase.Cluster(`couchbase://${Configuration.couchbase.hostname}/`)
   cluster.authenticate(Configuration.couchbase.username, Configuration.couchbase.password)
   eventstore = cluster.openBucket('eventstore')
 } catch (e) {
   captureException(e)
+} */
+
+let eventstore
+try {
+  eventstore = require('rethinkdbdash')({
+    servers: [{ host: Configuration.rethinkdb.hostname, port: 28015 }],
+    discovery: true,
+    user: Configuration.rethinkdb.username,
+    password: Configuration.rethinkdb.password,
+    db: 'eventstore',
+    silent: true,
+    log: (message) => {
+      // console.log(message)
+    }
+  })
+  eventstore.getPoolMaster().on('healthy', function (healthy) {
+    if (healthy === false) {
+      captureException('Rethinkdb is unhealthy')
+    }
+  })
+} catch (e) {
+  captureException(e)
 }
 
+/*****
+NATS
+*****/
 const NATS = {
   url: `nats://${Configuration.nats.hostname}:${Configuration.nats.port}`,
   user: Configuration.nats.username,

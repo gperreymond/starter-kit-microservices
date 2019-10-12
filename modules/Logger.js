@@ -20,7 +20,8 @@ class LogstashTransport extends Transport {
 
 const logstash = new Logstash({
   type: 'tcp',
-  ...Configuration.logstash
+  host: Configuration.logstash.hostname,
+  port: Configuration.logstash.port
 })
 
 class Logger {

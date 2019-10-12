@@ -1,9 +1,16 @@
 const Boom = require('@hapi/boom')
 
+const Configuration = require('../../../config')
+
 const handler = async (req) => {
   try {
-    const result = await req.nats.call('System.GetHealthCheckForKubernetes')
-    return result
+    const { env, name, version, commit } = Configuration
+    return {
+      env,
+      name,
+      version,
+      commit
+    }
   } catch (e) {
     return Boom.boomify(e, { statusCode: 400 })
   }
@@ -15,7 +22,7 @@ module.exports = {
   handler,
   options: {
     auth: false,
-    log: { collect: true },
+    log: { collect: false },
     tags: ['api', 'System']
   }
 }

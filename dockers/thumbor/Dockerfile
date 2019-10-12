@@ -13,8 +13,9 @@ RUN apk add --no-cache --virtual .build-deps \
         libwebp-dev \
         python-dev \
         tiff-dev \
-        zlib-dev \
-    && apk add --no-cache \
+        zlib-dev
+
+RUN apk add --no-cache \
         cairo \
         coreutils \
         exiftool \
@@ -28,11 +29,13 @@ RUN apk add --no-cache --virtual .build-deps \
         python \
         py-pip \
         tiff \
-        zlib \
-    && pip install --no-cache-dir thumbor==6.7.0 envtpl==0.6.0 tc_aws \
-    && apk del .build-deps \
-    && rm -rf /var/cache/apk/* \
-    && rm -rf /root/.cache
+        zlib
+
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir thumbor==6.7.0 envtpl==0.6.0 tc_aws && \
+    apk del .build-deps && \
+    rm -rf /var/cache/apk/* && \
+    rm -rf /root/.cache
 
 COPY thumbor.conf.tpl /usr/local/etc/thumbor.conf.tpl
 COPY docker-entrypoint.sh /docker-entrypoint.sh
