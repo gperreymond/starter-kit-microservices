@@ -8,13 +8,14 @@ services:
       - private_thumbor
       - public
     environment:
+      RESPECT_ORIENTATION: "True"
       USE_GIFSICLE_ENGINE: "True"
       LOADER: "tc_aws.loaders.s3_loader"
       TC_AWS_ENABLE_HTTP_LOADER: "True"
       TC_AWS_ALLOWED_BUCKETS: "['lalalab-products-source', 'lalalab-raw-files']"
       TC_AWS_REGION: "eu-west-1"
-      AWS_ACCESS_KEY_ID: "xxxxxxxxxx"
-      AWS_SECRET_ACCESS_KEY: "xxxxxxxxxx"
+      AWS_ACCESS_KEY_ID: "AKIAU4KXHUFK3JKDLHMS"
+      AWS_SECRET_ACCESS_KEY: "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"
     deploy:
       mode: replicated
       replicas: 1
