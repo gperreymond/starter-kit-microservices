@@ -14,8 +14,8 @@ services:
       TC_AWS_ENABLE_HTTP_LOADER: "True"
       TC_AWS_ALLOWED_BUCKETS: "['lalalab-products-source', 'lalalab-raw-files']"
       TC_AWS_REGION: "eu-west-1"
-      AWS_ACCESS_KEY_ID: "AKIAU4KXHUFK3JKDLHMS"
-      AWS_SECRET_ACCESS_KEY: "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"
+      AWS_ACCESS_KEY_ID: "..."
+      AWS_SECRET_ACCESS_KEY: "..."
     deploy:
       mode: replicated
       replicas: 1
