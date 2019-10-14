@@ -39,11 +39,13 @@ class Server {
         title: 'API Documentation',
         version: Configuration.version
       },
+      consumes: ['application/x-www-form-urlencoded', 'application/json'],
       payloadType: 'form',
       securityDefinitions: {
-        BasicAuth: { type: 'basic' }
+        BasicAuth: { type: 'basic' },
+        ApiKeyAuth: { type: 'apiKey', in: 'header', name: 'Authorization' }
       },
-      schemes: ['https'],
+      schemes: ['http', 'https'],
       grouping: 'tags'
     }
     await this.getInstance().register({ plugin: HapiSwagger, options: swaggerOptions })
@@ -58,8 +60,7 @@ class Server {
       do {
         const route = routes.shift()
         let selectedColor = 'green'
-        if (!route.options.plugins) { route.options.plugins = {} }
-        route.options.plugins['hapi-swagger'] = { security: [] }
+        route.options.plugins['hapi-swagger'].security = []
         if (route.options.auth === 'simple') {
           selectedColor = 'yellow'
           route.options.plugins['hapi-swagger'].security = [{ BasicAuth: [] }]

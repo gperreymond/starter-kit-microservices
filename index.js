@@ -4,6 +4,8 @@ const debug = require('debug')('application:main'.padEnd(25, ' '))
 const Broker = require('./modules/Broker')
 const Server = require('./modules/Server')
 const RabbitMQ = require('./modules/RabbitMQ')
+const Models = require('./modules/Models')
+
 const Configuration = require('./config')
 
 debug(`Starting application: ${Configuration.env}`)
@@ -68,20 +70,24 @@ const NATS = {
 
 const start = async function () {
   try {
+    // Data models connections
+    const models = new Models()
+    await models.start()
     // RabbitMQ queues
     const rabbitmq = new RabbitMQ()
     rabbitmq.on('error', err => { throw err })
     // Moleculer on nats (services discovery)
-    const nats = new Broker('NATS', NATS)
-    nats.on('error', err => { throw err })
-    nats.getInstance().$eventstore = eventstore
-    nats.getInstance().$rabbitmq = rabbitmq.getInstance()
-    await nats.start()
-    rabbitmq.$nats = nats.getInstance()
-    debug('Nats started')
+    const moleculer = new Broker('NATS', NATS)
+    moleculer.on('error', err => { throw err })
+    moleculer.getInstance().$models = models.getInstance()
+    moleculer.getInstance().$eventstore = eventstore
+    moleculer.getInstance().$rabbitmq = rabbitmq.getInstance()
+    await moleculer.start()
+    rabbitmq.$moleculer = moleculer.getInstance()
+    debug('Moleculer started')
     // Server
     const server = new Server()
-    server.getInstance().decorate('request', 'nats', nats.getInstance())
+    server.getInstance().decorate('request', 'moleculer', moleculer.getInstance())
     server.getInstance().decorate('request', 'rabbitmq', rabbitmq.getInstance())
     server.on('error', err => { throw err })
     await server.start()
