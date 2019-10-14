@@ -1,10 +1,10 @@
 # Development Bootstrap
 
-__Based on docker, docker-compose and swarmMode.__
+__Based on docker, docker-compose and swarm mode.__
 
-#### Documentations
-
-- https://sysadmins.co.za/traefik-and-portainer-on-docker-swarm-with-letsencrypt/
+```sh
+docker swarm init
+```
 
 #### Troubles with elasticsearch
 
@@ -15,30 +15,32 @@ __Based on docker, docker-compose and swarmMode.__
 
 #### commons
 
-- traefik: https://traefik.docker.localhost
-- portainer: https://portainer.docker.localhost
+- traefik: https://traefik.io/
+- portainer: https://www.portainer.io/
 
 #### brokers
 
-- rabbitmq
-- nats
+- rabbitmq: https://www.rabbitmq.com/
+- nats: https://nats.io/
 
 #### databases
 
-- postgres
-- mysql
-- couchbase
-- elasticsearch
+- postgres: https://www.postgresql.org/
+- mysql: https://www.mysql.com/fr/
+- couchbase: https://www.couchbase.com/
+- elasticsearch: https://www.elastic.co/fr/
+- rethinkdb: https://rethinkdb.com/
 
 #### others
 
-- logstash
-- thumbor
-- scribus-server
+- logstash: https://www.elastic.co/fr/products/logstash
+- thumbor: http://thumbor.org/
 
 #### frontends
 
-- rabbitmq: https://portainer.docker.localhost
+- traefik: https://traefik.docker.localhost
+- portainer: https://portainer.docker.localhost
+- rabbitmq: https://rabbitmq.docker.localhost
 - couchbase: https://couchbase.docker.localhost
 - kibana: https://kibana.docker.localhost
 
