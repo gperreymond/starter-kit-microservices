@@ -2,11 +2,11 @@
 
 __Based on docker, docker-compose and swarmMode.__
 
-#### Documentations
+#### Documentations
 
 - https://sysadmins.co.za/traefik-and-portainer-on-docker-swarm-with-letsencrypt/
 
-#### Troubles with elasticsearch
+#### Troubles with elasticsearch
 
 - sudo sysctl -w vm.max_map_count=262144
 - sudo sysctl -w fs.file-max=65536
