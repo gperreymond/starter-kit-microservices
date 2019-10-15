@@ -18,6 +18,10 @@ docker swarm init
 - traefik: https://traefik.io/
 - portainer: https://www.portainer.io/
 
+#### grafana
+
+- grafana: https://grafana.com/
+
 #### brokers
 
 - rabbitmq: https://www.rabbitmq.com/
@@ -43,6 +47,7 @@ docker swarm init
 - rabbitmq: https://rabbitmq.docker.localhost
 - couchbase: https://couchbase.docker.localhost
 - kibana: https://kibana.docker.localhost
+- grafana: https://grafana.docker.localhost
 
 ## Usages
 

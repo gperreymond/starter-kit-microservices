@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+
+  grafana:
+    image: swarmprom-grafana:5.3.4
+    networks:
+      - private_grafana
+      - public
+    environment:
+      GF_SECURITY_ADMIN_USER: infra
+      GF_SECURITY_ADMIN_PASSWORD: infra
+      GF_USERS_ALLOW_SIGN_UP: "false"
+    deploy:
+      mode: replicated
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      labels:
+        - "traefik.docker.network=public"
+        - "traefik.port=3000"
+        - "traefik.backend=grafana"
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=Host:grafana.docker.localhost"
+        - "traefik.frontend.headers.SSLRedirect=true"
+        - "traefik.frontend.entryPoints=http,https"
+
+networks:
+
+  private_grafana:
+    driver: overlay
+    name: private_grafana
+  public:
+    external: true

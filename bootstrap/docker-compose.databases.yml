@@ -2,6 +2,17 @@ version: '3.7'
 
 services:
 
+  memcached:
+    image: memcached:1.5.19-alpine
+    networks:
+      - private_databases
+      - public
+    deploy:
+      mode: replicated
+      replicas: 1
+    ports:
+      - "11211:11211"
+
   rethinkdb:
     image: rethinkdb
     networks:
