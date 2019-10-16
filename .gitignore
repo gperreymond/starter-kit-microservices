@@ -9,5 +9,4 @@ nconf.json
 yarn-error.log
 yarn.lock
 
-models/mysql/polagram/
-services/Customers/
+__models

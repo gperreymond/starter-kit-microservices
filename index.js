@@ -4,7 +4,6 @@ const debug = require('debug')('application:main'.padEnd(25, ' '))
 const Broker = require('./modules/Broker')
 const Server = require('./modules/Server')
 const RabbitMQ = require('./modules/RabbitMQ')
-const Models = require('./modules/Models')
 
 const Configuration = require('./config')
 
@@ -35,6 +34,9 @@ try {
   captureException(e)
 } */
 
+/*****
+EVENTSTORE
+*****/
 let eventstore
 try {
   eventstore = require('rethinkdbdash')({
@@ -70,22 +72,18 @@ const NATS = {
 
 const start = async function () {
   try {
-    // Data models connections
-    const models = new Models()
-    await models.start()
-    // RabbitMQ queues
+    // 1) RabbitMQ (Messages)
     const rabbitmq = new RabbitMQ()
     rabbitmq.on('error', err => { throw err })
-    // Moleculer on nats (services discovery)
+    // 2) Moleculer on nats (Services)
     const moleculer = new Broker('NATS', NATS)
     moleculer.on('error', err => { throw err })
-    moleculer.getInstance().$models = models.getInstance()
     moleculer.getInstance().$eventstore = eventstore
     moleculer.getInstance().$rabbitmq = rabbitmq.getInstance()
     await moleculer.start()
     rabbitmq.$moleculer = moleculer.getInstance()
     debug('Moleculer started')
-    // Server
+    // 3) Server (Gateway)
     const server = new Server()
     server.getInstance().decorate('request', 'moleculer', moleculer.getInstance())
     server.getInstance().decorate('request', 'rabbitmq', rabbitmq.getInstance())

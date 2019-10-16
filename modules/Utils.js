@@ -14,17 +14,6 @@ const validateBasic = async (request, username, password) => {
   return { isValid, credentials: { name: basic.username } }
 }
 
-const getDataModels = (dirpath) => {
-  const files = glob.sync(`${path.resolve(__dirname, '../', dirpath)}/**/index.js`)
-  const models = []
-  if (files.length === 0) { return models }
-  do {
-    const file = files.shift()
-    models.push(require(file))
-  } while (files.length)
-  return models
-}
-
 const getQueues = (dirpath) => {
   const files = glob.sync(`${path.resolve(__dirname, '../', dirpath)}/*/queue.js`)
   const queues = []
@@ -85,7 +74,6 @@ const getRoutes = () => {
 }
 
 module.exports = {
-  getDataModels,
   getQueues,
   getActions,
   getEvents,
