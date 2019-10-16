@@ -4,13 +4,13 @@ nconf.argv().env().file({ file: 'nconf.json' })
 // ************************************
 // Typecasting from kube env
 // ************************************
-let APP_BROKER_LOGGER = false
+let APP_MOLECULER_LOGGER = false
 let APP_PORT = 3000
 let APP_RABBITMQ_PORT = 5672
 let APP_NATS_PORT = 4222
 let APP_LOGSTASH_PORT = 5000
 // ************************************
-if (nconf.get('APP_BROKER_LOGGER')) { APP_BROKER_LOGGER = nconf.get('APP_BROKER_LOGGER') === 'true' }
+if (nconf.get('APP_MOLECULER_LOGGER')) { APP_MOLECULER_LOGGER = nconf.get('APP_MOLECULER_LOGGER') === 'true' }
 if (nconf.get('APP_PORT')) { APP_PORT = parseInt(nconf.get('APP_PORT')) }
 if (nconf.get('APP_RABBITMQ_PORT')) { APP_RABBITMQ_PORT = parseInt(nconf.get('APP_RABBITMQ_PORT')) }
 if (nconf.get('APP_NATS_PORT')) { APP_NATS_PORT = parseInt(nconf.get('APP_NATS_PORT')) }
@@ -51,8 +51,8 @@ module.exports = {
     password: nconf.get('APP_NATS_PASSWORD') || 'infra',
     maxReconnectAttempts: 3
   },
-  broker: {
-    logger: APP_BROKER_LOGGER
+  moleculer: {
+    logger: APP_MOLECULER_LOGGER
   },
   auth: {
     basic: {

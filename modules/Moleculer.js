@@ -9,7 +9,7 @@ const { ServiceBroker } = require('moleculer')
 const Configuration = require('../config')
 const Service = require('./Service')
 
-class Broker {
+class Moleculer {
   constructor (type, options) {
     debug(`Initializing broker: ${type}`)
     this._type = type
@@ -26,8 +26,18 @@ class Broker {
         TRANSPORTER: 'error',
         '**': 'info'
       },
-      logger: Configuration.broker.logger,
-      metrics: true,
+      logger: Configuration.moleculer.logger,
+      metrics: {
+        enabled: true,
+        reporter: [{
+          type: 'Prometheus',
+          options: {
+            port: 3030,
+            includes: ['moleculer.**'],
+            excludes: ['moleculer.transit.**']
+          }
+        }]
+      },
       validator: true,
       middlewares: [{
         stopped: () => {
@@ -69,7 +79,7 @@ class Broker {
     try {
       await this.services()
       await this.getInstance().start()
-      debug('Broker started')
+      debug('Moleculer started')
       return true
     } catch (e) {
       this.emit('error', e)
@@ -78,5 +88,5 @@ class Broker {
   }
 }
 
-inherits(Broker, EventEmitter)
-module.exports = Broker
+inherits(Moleculer, EventEmitter)
+module.exports = Moleculer

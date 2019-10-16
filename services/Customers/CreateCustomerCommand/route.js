@@ -3,7 +3,7 @@ const Boom = require('@hapi/boom')
 
 const handler = async (req, h) => {
   try {
-    await req.moleculer.call('Customers.LegacyCreateUserInPolagramCommand', req.payload)
+    await req.moleculer.call('Customers.CreateCustomerCommand', req.payload)
     return h.response({}).code(201)
   } catch (e) {
     return Boom.boomify(e, { statusCode: 400 })

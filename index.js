@@ -1,7 +1,7 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
 // const couchbase = require('couchbase')
 
-const Broker = require('./modules/Broker')
+const Moleculer = require('./modules/Moleculer')
 const Server = require('./modules/Server')
 const RabbitMQ = require('./modules/RabbitMQ')
 
@@ -76,7 +76,7 @@ const start = async function () {
     const rabbitmq = new RabbitMQ()
     rabbitmq.on('error', err => { throw err })
     // 2) Moleculer on nats (Services)
-    const moleculer = new Broker('NATS', NATS)
+    const moleculer = new Moleculer('NATS', NATS)
     moleculer.on('error', err => { throw err })
     moleculer.getInstance().$eventstore = eventstore
     moleculer.getInstance().$rabbitmq = rabbitmq.getInstance()
