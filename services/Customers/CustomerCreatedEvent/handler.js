@@ -1,5 +1,8 @@
 const handler = async (ctx) => {
-  ctx.service.logger.warn(ctx.ctx.eventName, ctx.params)
+  console.log('Payload:', ctx.params)
+  console.log('Sender:', ctx.nodeID)
+  console.log('Metadata:', ctx.meta)
+  console.log('The called event name:', ctx.eventName)
 }
 
 module.exports = handler

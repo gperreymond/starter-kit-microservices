@@ -1,10 +1,11 @@
 const handler = async (ctx) => {
-  ctx.service.logger.warn(ctx.action.rawName, ctx.params)
+  ctx.broker.logger.warn(ctx.action.name, ctx.params)
   try {
     const { email } = ctx.params
+    ctx.broker.emit('Customers.CustomerCreatedEvent', ctx.params)
     return { email }
   } catch (e) {
-    ctx.service.logger.error(ctx.action.rawName, e.message)
+    ctx.broker.logger.error(ctx.action.name, e.message)
     return Promise.reject(e)
   }
 }
