@@ -1,6 +1,6 @@
 {
   "name": "starter-kit-microservices",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "repository": "git@github.com:gperreymond/starter-kit-microservices.git",
   "bugs": {
     "url": "https://github.com/gperreymond/starter-kit-microservices/issues"
@@ -56,7 +56,7 @@
     "pg-hstore": "2.3.3",
     "rabbit-queue": "4.2.1",
     "rethinkdbdash": "2.3.31",
-    "sequelize": "5.19.6",
+    "sequelize": "5.19.8",
     "uuid": "3.3.3",
     "winston": "3.2.1",
     "winston-transport": "4.3.0"
