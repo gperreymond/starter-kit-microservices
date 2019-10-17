@@ -82,7 +82,6 @@ const start = async function () {
     moleculer.getInstance().$rabbitmq = rabbitmq.getInstance()
     await moleculer.start()
     rabbitmq.$moleculer = moleculer.getInstance()
-    debug('Moleculer started')
     // 3) Server (Gateway)
     const server = new Server()
     server.getInstance().decorate('request', 'moleculer', moleculer.getInstance())

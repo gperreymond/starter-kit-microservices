@@ -55,7 +55,11 @@ const getEvents = (dirpath) => {
   do {
     const file = files.shift()
     const basename = path.basename(path.resolve(file, '..'))
-    const event = require(file)
+    const basepath = path.resolve(file, '..')
+    const event = {
+      handler: require(`${basepath}/event.js`)
+    }
+    debug(`Event ${basename} has been found`)
     events[basename] = event
   } while (files.length)
   return events
