@@ -12,13 +12,13 @@ const handler = async (req, h) => {
 
 module.exports = {
   method: 'post',
-  path: '/v1/users',
+  path: '/v1/customers',
   handler,
   options: {
     auth: 'simple',
     log: { collect: true },
     tags: ['api', 'Customers'],
-    description: 'Create a user in the polagram database',
+    description: 'Create a new customer',
     payload: {
       allow: ['application/x-www-form-urlencoded', 'application/json']
     },

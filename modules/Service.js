@@ -74,6 +74,7 @@ class Service {
       created () {
       },
       async started () {
+        debug(`Service ${this.name} has started`)
       },
       async stopped () {
       }
