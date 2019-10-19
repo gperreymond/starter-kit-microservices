@@ -30,13 +30,8 @@ module.exports = {
   },
   couchbase: {
     hostname: nconf.get('APP_COUCHBASE_HOSTNAME') || 'localhost',
-    username: 'infra',
-    password: 'infra'
-  },
-  rethinkdb: {
-    hostname: nconf.get('APP_RETHINKDB_HOSTNAME') || 'localhost',
-    username: 'admin',
-    password: 'infra'
+    username: nconf.get('APP_COUCHBASE_USERNAME') || 'infra',
+    password: nconf.get('APP_COUCHBASE_PASSWORD') || 'infra'
   },
   rabbitmq: {
     hostname: nconf.get('APP_RABBITMQ_HOSTNAME') || 'localhost',

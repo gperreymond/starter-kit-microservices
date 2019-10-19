@@ -13,27 +13,6 @@ services:
     ports:
       - "11211:11211"
 
-  rethinkdb:
-    image: rethinkdb
-    networks:
-      - private_databases
-      - public
-    deploy:
-      mode: replicated
-      replicas: 1
-      labels:
-        - "traefik.docker.network=public"
-        - "traefik.port=8080"
-        - "traefik.backend=rethinkdb"
-        - "traefik.enable=true"
-        - "traefik.frontend.rule=Host:rethinkdb.docker.localhost"
-        - "traefik.frontend.headers.SSLRedirect=true"
-        - "traefik.frontend.entryPoints=http,https"
-    volumes:
-      - rethinkdb_data:/data
-    ports:
-      - "28015:28015"
-
   mysql:
     image: "mysql:5.7"
     environment:
@@ -97,7 +76,6 @@ volumes:
   couchbase_data:
   postgres_data:
   mysql_data:
-  rethinkdb_data:
 
 networks:
 

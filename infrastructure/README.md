@@ -33,7 +33,6 @@ docker swarm init
 - mysql: https://www.mysql.com/fr/
 - couchbase: https://www.couchbase.com/
 - elasticsearch: https://www.elastic.co/fr/
-- rethinkdb: https://rethinkdb.com/
 
 #### others
 

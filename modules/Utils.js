@@ -1,7 +1,7 @@
+// const debug = require('debug')('application:utils'.padEnd(25, ' '))
+
 const path = require('path')
 const glob = require('glob-promise')
-const fse = require('fs-extra')
-const debug = require('debug')('application:utils'.padEnd(25, ' '))
 
 const Configuration = require('../config')
 

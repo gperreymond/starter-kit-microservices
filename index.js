@@ -1,16 +1,16 @@
 const debug = require('debug')('application:main'.padEnd(25, ' '))
-// const couchbase = require('couchbase')
 
 const Moleculer = require('./modules/Moleculer')
 const Server = require('./modules/Server')
 const RabbitMQ = require('./modules/RabbitMQ')
+const EventStore = require('./modules/EventStore')
 
 const Configuration = require('./config')
 
 debug(`Starting application: ${Configuration.env}`)
 
 const captureException = function (err) {
-  debug('Something went wrong')
+  debug('Something went wrong', err.name)
   console.log(err)
   setTimeout(() => {
     process.exit(1)
@@ -20,44 +20,6 @@ process.on('uncaughtException', captureException)
 process.on('exit', (n) => {
   if (n !== 0) { captureException(new Error('Node process has exit...')) }
 })
-
-/*****
-COUCHBASE
-*****/
-/* let cluster
-let eventstore
-try {
-  cluster = new couchbase.Cluster(`couchbase://${Configuration.couchbase.hostname}/`)
-  cluster.authenticate(Configuration.couchbase.username, Configuration.couchbase.password)
-  eventstore = cluster.openBucket('eventstore')
-} catch (e) {
-  captureException(e)
-} */
-
-/*****
-EVENTSTORE
-*****/
-let eventstore
-try {
-  eventstore = require('rethinkdbdash')({
-    servers: [{ host: Configuration.rethinkdb.hostname, port: 28015 }],
-    discovery: true,
-    user: Configuration.rethinkdb.username,
-    password: Configuration.rethinkdb.password,
-    db: 'eventstore',
-    silent: true,
-    log: (message) => {
-      // console.log(message)
-    }
-  })
-  eventstore.getPoolMaster().on('healthy', function (healthy) {
-    if (healthy === false) {
-      captureException('Rethinkdb is unhealthy')
-    }
-  })
-} catch (e) {
-  captureException(e)
-}
 
 /*****
 NATS
@@ -72,17 +34,21 @@ const NATS = {
 
 const start = async function () {
   try {
-    // 1) RabbitMQ (Messages)
+    // Eventstore
+    const eventstore = new EventStore()
+    await eventstore.start()
+    eventstore.on('error', err => { throw err })
+    // RabbitMQ (Messages)
     const rabbitmq = new RabbitMQ()
     rabbitmq.on('error', err => { throw err })
-    // 2) Moleculer on nats (Services)
+    // Moleculer on nats (Services)
     const moleculer = new Moleculer('NATS', NATS)
     moleculer.on('error', err => { throw err })
-    moleculer.getInstance().$eventstore = eventstore
+    moleculer.getInstance().$eventstore = eventstore.getInstance()
     moleculer.getInstance().$rabbitmq = rabbitmq.getInstance()
     await moleculer.start()
     rabbitmq.$moleculer = moleculer.getInstance()
-    // 3) Server (Gateway)
+    // Server (Gateway)
     const server = new Server()
     server.getInstance().decorate('request', 'moleculer', moleculer.getInstance())
     server.getInstance().decorate('request', 'rabbitmq', rabbitmq.getInstance())
@@ -90,6 +56,7 @@ const start = async function () {
     await server.start()
     debug('Application started')
   } catch (e) {
+    console.log('******************** ERROR')
     return Promise.reject(e)
   }
 }

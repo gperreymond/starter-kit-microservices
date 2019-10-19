@@ -1,7 +1,8 @@
+const debug = require('debug')('application:moleculer'.padEnd(25, ' '))
+
 const path = require('path')
 const glob = require('glob-promise')
 const fse = require('fs-extra')
-const debug = require('debug')('application:moleculer:service'.padEnd(25, ' '))
 
 const getCommands = (domain) => {
   const files = glob.sync(`${path.resolve(__dirname, '../services', domain)}/*Command/handler.js`)
@@ -56,8 +57,17 @@ const getEvents = (domain) => {
   return events
 }
 
+const getMethods = (domain) => {
+  const files = glob.sync(`${path.resolve(__dirname, '../services', domain)}/methods.js`)
+  if (files.length === 0) { return {} }
+  debug(`Domain ${domain}, Methods has been found`)
+  const methods = require(`${path.resolve(__dirname, '../services', domain)}/methods.js`)
+  return methods
+}
+
 class Service {
   constructor (name) {
+    const methods = getMethods(`${name}`)
     const queries = getQueries(`${name}`)
     const commands = getCommands(`${name}`)
     const actions = {
@@ -70,7 +80,7 @@ class Service {
       name,
       actions,
       events,
-      methods: {},
+      methods,
       created () {
       },
       async started () {

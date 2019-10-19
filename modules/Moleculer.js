@@ -1,4 +1,4 @@
-const debug = require('debug')('application:broker'.padEnd(25, ' '))
+const debug = require('debug')('application:moleculer'.padEnd(25, ' '))
 
 const path = require('path')
 const glob = require('glob-promise')
