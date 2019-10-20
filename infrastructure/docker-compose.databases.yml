@@ -11,7 +11,9 @@ services:
       mode: replicated
       replicas: 1
     ports:
-      - "11211:11211"
+      - target: 11211
+        published: 11211
+        mode: host
 
   mysql:
     image: "mysql:5.7"
@@ -28,7 +30,9 @@ services:
       mode: replicated
       replicas: 1
     ports:
-      - "3306:3306"
+      - target: 3306
+        published: 3306
+        mode: host
 
 
   postgres:
@@ -45,15 +49,12 @@ services:
       mode: replicated
       replicas: 1
     ports:
-      - "5432:5432"
+      - target: 5432
+        published: 5432
+        mode: host
 
-  couchbase:
-    image: "couchbase:community-6.0.0"
-    environment:
-      COUCHDB_USER: infra
-      COUCHDB_SECRET: infra
-    volumes:
-      - couchbase_data:/opt/couchbase/var
+  rethinkdb:
+    image: rethinkdb:2.3.6
     networks:
       - private_databases
       - public
@@ -62,20 +63,24 @@ services:
       replicas: 1
       labels:
         - "traefik.docker.network=public"
-        - "traefik.port=8091"
-        - "traefik.backend=couchbase"
+        - "traefik.port=8080"
+        - "traefik.backend=rethinkdb"
         - "traefik.enable=true"
-        - "traefik.frontend.rule=Host:couchbase.docker.localhost"
+        - "traefik.frontend.rule=Host:rethinkdb.docker.localhost"
         - "traefik.frontend.headers.SSLRedirect=true"
         - "traefik.frontend.entryPoints=http,https"
+    volumes:
+      - rethinkdb_data:/data
     ports:
-      - "8091:8091"
+      - target: 28015
+        published: 28015
+        mode: host
 
 volumes:
 
-  couchbase_data:
   postgres_data:
   mysql_data:
+  rethinkdb_data:
 
 networks:
 

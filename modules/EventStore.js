@@ -3,7 +3,6 @@ const debug = require('debug')('application:eventstore'.padEnd(25, ' '))
 const EventEmitter = require('events')
 const { inherits } = require('util')
 const uuid = require('uuid')
-const couchbase = require('couchbase')
 
 const Configuration = require('../config')
 
@@ -14,19 +13,19 @@ class EventStore {
   }
 
   async start () {
-    debug('Start the cluster, open the bucket')
+    debug('Start the eventstore')
     try {
-      const cluster = new couchbase.Cluster(`couchbase://${Configuration.couchbase.hostname}/`)
-      cluster.authenticate(Configuration.couchbase.username, Configuration.couchbase.password)
-      this._instance = cluster.openBucket('eventstore')
-      this._instance.on('connect', () => {
-        debug('Bucket EventStore is connected')
-      })
-      this._instance.on('error', (err) => {
-        debug('Bucket EventStore error', err.message)
-        if (err.code && err.code === 2) {
-          this.emit('error', err)
-        }
+      this._instance = require('rethinkdbdash')({
+        servers: [{ host: Configuration.rethinkdb.hostname, port: 28015 }],
+        user: Configuration.rethinkdb.username,
+        password: Configuration.rethinkdb.password,
+        db: 'eventstore',
+        silent: true,
+        log: (message) => {
+          debug(message)
+        },
+        pool: true,
+        cursor: true
       })
       return true
     } catch (e) {
@@ -35,31 +34,25 @@ class EventStore {
     }
   }
 
-  insert (eventName, data) {
+  async insert (eventName, data) {
     debug(`Insert data from ${eventName}`)
-    return new Promise((resolve, reject) => {
-      try {
-        const { aggregateId } = data
-        const [aggregateType, eventType] = eventName.split('.')
-        const rowData = {
-          aggregateId: aggregateId,
-          aggregateType: aggregateType,
-          eventType: eventType,
-          createdAt: new Date(),
-          data
-        }
-        const bucket = this._instance
-        bucket.manager().createPrimaryIndex(function () {
-          bucket.upsert(uuid.v4(), rowData, function (err, result) {
-            if (err) { throw err }
-            return resolve(true)
-          })
-        })
-      } catch (e) {
-        console.log(e)
-        return reject(e)
+    try {
+      const eventId = uuid.v4()
+      const { aggregateId } = data
+      const [aggregateDomain, aggregateEvent] = eventName.split('.')
+      const eventData = {
+        aggregateId,
+        aggregateDomain,
+        aggregateEvent,
+        createdAt: new Date(),
+        data
       }
-    })
+      await this._instance.table('events').insert({ id: eventId, ...eventData })
+      return true
+    } catch (e) {
+      console.log(e)
+      return Promise.reject(e)
+    }
   }
 
   getInstance () {

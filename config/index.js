@@ -28,10 +28,10 @@ module.exports = {
     hostname: nconf.get('APP_LOGSTASH_HOSTNAME') || 'localhost',
     port: APP_LOGSTASH_PORT
   },
-  couchbase: {
-    hostname: nconf.get('APP_COUCHBASE_HOSTNAME') || 'localhost',
-    username: nconf.get('APP_COUCHBASE_USERNAME') || 'infra',
-    password: nconf.get('APP_COUCHBASE_PASSWORD') || 'infra'
+  rethinkdb: {
+    hostname: nconf.get('APP_RETHINKDB_HOSTNAME') || 'localhost',
+    username: nconf.get('APP_RETHINKDB_USERNAME') || 'infra',
+    password: nconf.get('APP_RETHINKDB_PASSWORD') || 'infra'
   },
   rabbitmq: {
     hostname: nconf.get('APP_RABBITMQ_HOSTNAME') || 'localhost',

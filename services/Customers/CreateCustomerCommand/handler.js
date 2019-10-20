@@ -11,7 +11,7 @@ const handler = async function (ctx) {
       ...ctx.params
     })
     // Insert into Eventstore
-    ctx.broker.emit('Eventstore.CustomerCreatedEvent', {
+    ctx.broker.emit('Customers.CustomerCreatedEvent', {
       aggregateId,
       ...ctx.params
     })
