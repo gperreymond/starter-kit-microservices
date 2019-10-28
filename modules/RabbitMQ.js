@@ -45,12 +45,13 @@ class RabbitMQ {
             this.getInstance().createQueue(`${basename}.${queue.name}.Queue`, queue.options, async (msg, ack) => {
               try {
                 const action = msg.fields.routingKey.replace('.Key', '')
+                console.log(action)
                 const params = JSON.parse(msg.content.toString())
                 await this.$nats.call(action, params)
-                ack(null, 'response')
+                ack(null)
               } catch (err) {
                 console.log(err.message)
-                ack(null, 'response')
+                ack(err.message)
               }
             }).then(() => debug(`... ${basename}.${queue.name}.Queue created`))
             this.getInstance().bindToTopic(`${basename}.${queue.name}.Queue`, `${basename}.${queue.name}.Key`)

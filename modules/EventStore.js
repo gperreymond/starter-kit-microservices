@@ -34,6 +34,15 @@ class EventStore {
     }
   }
 
+  publish (eventName, data) {
+    debug(`Publish data into ${eventName}.Key`)
+    if (!this.$rabbitmq) {
+      this.emit('error', new Error('RabbitMQ not initialized'))
+    } else {
+      this.$rabbitmq.publishTopic(`${eventName}.Key`, data)
+    }
+  }
+
   async insert (eventName, data) {
     debug(`Insert data from ${eventName}`)
     try {

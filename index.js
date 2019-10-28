@@ -34,13 +34,14 @@ const NATS = {
 
 const start = async function () {
   try {
-    // Eventstore
-    const eventstore = new EventStore()
-    await eventstore.start()
-    eventstore.on('error', err => { throw err })
     // RabbitMQ (Messages)
     const rabbitmq = new RabbitMQ()
     rabbitmq.on('error', err => { throw err })
+    // Eventstore
+    const eventstore = new EventStore()
+    await eventstore.start()
+    eventstore.$rabbitmq = rabbitmq.getInstance()
+    eventstore.on('error', err => { throw err })
     // Moleculer on nats (Services)
     const moleculer = new Moleculer('NATS', NATS)
     moleculer.on('error', err => { throw err })
