@@ -1,11 +1,11 @@
 const uuid = require('uuid')
 
 const handler = async function (ctx) {
-  ctx.broker.logger.warn(ctx.action.name, ctx.params)
   try {
+    ctx.broker.logger.warn(ctx.action.name, ctx.params)
     await this.createModels() // Create models for the service if not exists
-    const aggregateId = uuid.v4()
     // Insert into Database
+    const aggregateId = uuid.v4()
     await this.$customers.create({
       id: aggregateId,
       ...ctx.params

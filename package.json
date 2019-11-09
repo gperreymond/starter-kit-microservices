@@ -1,6 +1,6 @@
 {
   "name": "starter-kit-microservices",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "repository": "git@github.com:gperreymond/starter-kit-microservices.git",
   "bugs": {
     "url": "https://github.com/gperreymond/starter-kit-microservices/issues"
@@ -12,8 +12,10 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "test": "APP_PORT=4000 jest --coverage --verbose --detectOpenHandles --forceExit",
+    "start:infra": "./bootstrap.sh --start",
+    "stop:infra": "./bootstrap.sh --stop",
     "start": "node scripts/start",
+    "test": "APP_PORT=4000 jest --coverage --verbose --detectOpenHandles --forceExit",
     "standard": "standard"
   },
   "standard": {
@@ -45,7 +47,7 @@
     "fs-extra": "8.1.0",
     "glob": "7.1.4",
     "glob-promise": "3.4.0",
-    "hapi-swagger": "10.2.0",
+    "hapi-swagger": "10.3.0",
     "logstash-client": "1.1.1",
     "moleculer": "0.14.0-beta5",
     "mysql2": "1.7.0",
