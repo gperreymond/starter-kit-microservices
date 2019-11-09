@@ -1,0 +1,40 @@
+version: '3.7'
+
+services:
+
+  hydra:
+    image: oryd/hydra:v1.0.9
+    command:
+      serve all --dangerous-force-http
+    environment:
+      - CORS_ENABLED=true
+      - CORS_ALLOWED_METHODS=POST,GET,PUT,DELETE
+      - LOG_LEVEL=debug
+      - SECRETS_SYSTEM=ThisIsAGoodSecretForInfra
+      - DSN=postgres://infra:infra@postgres:5432/hydra?sslmode=disable
+      - URLS_SELF_ISSUER=https://hydra.docker.localhost/
+    networks:
+      - private_oryd
+      - public
+      - global
+    deploy:
+      mode: replicated
+      replicas: 1
+      labels:
+        - "traefik.docker.network=public"
+        - "traefik.port=4444"
+        - "traefik.backend=hydra"
+        - "traefik.enable=true"
+        - "traefik.frontend.rule=Host:hydra.docker.localhost"
+        - "traefik.frontend.headers.SSLRedirect=true"
+        - "traefik.frontend.entryPoints=http,https"
+
+networks:
+
+  private_oryd:
+    driver: overlay
+    name: private_oryd
+  public:
+    external: true
+  global:
+    external: true

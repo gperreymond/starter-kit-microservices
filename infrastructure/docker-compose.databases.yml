@@ -42,6 +42,7 @@ services:
       POSTGRES_PASSWORD: "infra"
     networks:
       - private_databases
+      - global
       - public
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -87,5 +88,7 @@ networks:
   private_databases:
     driver: overlay
     name: private_databases
+  global:
+    external: true
   public:
     external: true

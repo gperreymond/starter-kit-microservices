@@ -12,7 +12,9 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "prepare:infra:oryd": "./bootstrap.sh --prepare-oryd",
     "start:infra": "./bootstrap.sh --start",
+    "start:infra:oryd": "./bootstrap.sh --start-oryd",
     "stop:infra": "./bootstrap.sh --stop",
     "start": "node scripts/start",
     "test": "APP_PORT=4000 jest --coverage --verbose --detectOpenHandles --forceExit",

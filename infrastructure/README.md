@@ -18,6 +18,8 @@ docker swarm init
 - traefik: https://traefik.io/
 - portainer: https://www.portainer.io/
 
+#### ory/hydra
+
 #### grafana
 
 - grafana: https://grafana.com/
