@@ -15,26 +15,6 @@ services:
         published: 11211
         mode: host
 
-  mysql:
-    image: "mysql:5.7"
-    environment:
-      MYSQL_USER: "infra"
-      MYSQL_PASSWORD: "infra"
-      MYSQL_ROOT_PASSWORD: "infra"
-    networks:
-      - private_databases
-      - public
-    volumes:
-      - mysql_data:/var/lib/mysql
-    deploy:
-      mode: replicated
-      replicas: 1
-    ports:
-      - target: 3306
-        published: 3306
-        mode: host
-
-
   postgres:
     image: "postgres:9.6-alpine"
     environment:
