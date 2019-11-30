@@ -10,22 +10,22 @@ if [ "$1" = '--prepare-oryd' ]; then
 fi
 
 if [ "$1" = '--start' ]; then
-  docker stack deploy -c infrastructure/docker-compose.traefik.yml proxy
-  docker stack deploy -c infrastructure/docker-compose.portainer.yml portainer
-  docker stack deploy -c infrastructure/docker-compose.databases.yml databases
-  docker stack deploy -c infrastructure/docker-compose.brokers.yml brokers
+  docker stack deploy -c ../infrastructure/docker-compose.traefik.yml proxy
+  docker stack deploy -c ../infrastructure/docker-compose.portainer.yml portainer
+  docker stack deploy -c ../infrastructure/docker-compose.databases.yml databases
+  docker stack deploy -c ../infrastructure/docker-compose.brokers.yml brokers
 fi
 
 if [ "$1" = '--start-elk' ]; then
-  docker stack deploy -c infrastructure/docker-compose.elk.yml elk
+  docker stack deploy -c ../infrastructure/docker-compose.elk.yml elk
 fi
 
 if [ "$1" = '--start-oryd' ]; then
-  docker stack deploy -c infrastructure/docker-compose.oryd.yml oryd
+  docker stack deploy -c ../infrastructure/docker-compose.oryd.yml oryd
 fi
 
 if [ "$1" = '--start-grafana' ]; then
-  docker stack deploy -c infrastructure/docker-compose.grafana.yml grafana
+  docker stack deploy -c ../infrastructure/docker-compose.grafana.yml grafana
 fi
 
 if [ "$1" = '--stop' ]; then

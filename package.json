@@ -1,6 +1,6 @@
 {
   "name": "starter-kit-microservices",
-  "version": "0.2.7",
+  "version": "0.3.0",
   "repository": "git@github.com:gperreymond/starter-kit-microservices.git",
   "bugs": {
     "url": "https://github.com/gperreymond/starter-kit-microservices/issues"
@@ -12,10 +12,8 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prepare:infra:oryd": "./bootstrap.sh --prepare-oryd",
-    "start:infra": "./bootstrap.sh --start",
-    "start:infra:oryd": "./bootstrap.sh --start-oryd",
-    "stop:infra": "./bootstrap.sh --stop",
+    "bootstrap:start": "./bootstrap.sh --start",
+    "bootstrap:stop": "./bootstrap.sh --stop",
     "start": "node scripts/start",
     "test": "APP_PORT=4000 jest --coverage --verbose --detectOpenHandles --forceExit",
     "standard": "standard"
